@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta name="theme-color" content="#4F46E5"/>
+  <title>المكتبة التفاعلية الذكية – كتب الجيب</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="app.css">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16.png">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#2F7F79">
+
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="icons/favicon.svg">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<meta name="theme-color" content="#2F7F79">
+</head>
+<body>
+  <noscript>هذا التطبيق يحتاج تفعيل JavaScript.</noscript>
+
+  <div class="app" id="app">
+    <div class="header">
+      <div class="brand">📚 المكتبة الذكية</div>
+      <div class="spacer"></div>
+      <button class="iconbtn" id="themeBtn" title="تبديل النمط">🌓</button>
+      <button class="iconbtn" title="إشعارات">🔔</button>
+    </div>
+
+    <div class="search">🔍 <input id="searchInput" placeholder="ابحث عن كتاب أو كاتب" /></div>
+
+    <div class="views">
+      <section class="view active" id="view-home">
+        <div class="grid" id="homeCats"></div>
+        <div id="continueBlock" style="display:none">
+          <div class="kicker">مواصلة القراءة</div>
+          <div id="continueList" class="vstack"></div>
+        </div>
+        <div class="kicker">أحدث الإصدارات</div>
+        <div class="scroll-row" id="latestRow"></div>
+      </section>
+
+      <section class="view" id="view-sections">
+        <div class="kicker">الأقسام</div>
+        <div class="grid" id="sectionsGrid"></div>
+      </section>
+
+      <section class="view" id="view-category">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand" id="catTitle">القسم</div>
+        </div>
+        <div class="filterChips" id="catFilters"></div>
+        <div id="catList"></div>
+      </section>
+
+      <section class="view" id="view-book">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand" id="bookTitleTop">الكتاب</div>
+        </div>
+        <div id="bookDetail"></div>
+      </section>
+
+      <section class="view" id="view-reader">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand" id="readTitle">القارئ</div>
+        </div>
+        <div class="reader" id="readerBox"></div>
+      </section>
+
+      <section class="view" id="view-done">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand">أحسنت! ✔</div>
+        </div>
+        <div id="completionBox"></div>
+      </section>
+
+      <section class="view" id="view-library">
+        <div class="kicker">مكتبتي</div>
+        <div class="kicker" style="margin-top:6px;font-size:14px;color:var(--muted)">القوائم</div>
+        <div id="libLists"></div>
+        <div class="divider"></div>
+        <div class="kicker">ملاحظاتي</div>
+        <div id="notesAll"></div>
+      </section>
+
+      <section class="view" id="view-profile">
+        <div class="hstack">
+          <div class="avatar">أ</div>
+          <div>
+            <div style="font-weight:800">ليلى</div>
+            <div style="color:var(--muted);font-size:13px">مرحبًا بعودتك 👋</div>
+          </div>
+        </div>
+        <div class="statCards">
+          <div class="statCard"><div>📚 الكتب المقروءة</div><div style="font-size:22px;font-weight:800" id="statBooks">0</div></div>
+          <div class="statCard"><div>⏱️ ساعات القراءة</div><div style="font-size:22px;font-weight:800" id="statHours">0</div></div>
+        </div>
+        <div class="kicker">التصنيفات الأكثر قراءة</div>
+        <div id="topCats" class="chips"></div>
+        <div class="kicker">الإنجازات</div>
+        <div class="achv" id="achievements"></div>
+
+        <div class="kicker">إدارة</div>
+        <div class="hstack" style="gap:10px;flex-wrap:wrap">
+          <button class="btn primary" id="manageBtn">🛠️ إدارة الكتب</button>
+          <button class="btn" id="exportBtn">⬇️ تصدير قاعدة البيانات</button>
+          <button class="btn" id="importBtn">⬆️ استيراد قاعدة البيانات</button>
+          <input type="file" id="importFile" accept="application/json" style="display:none"/>
+          <button class="btn danger" id="resetBtn">إعادة ضبط التطبيق</button>
+        </div>
+      </section>
+
+      <section class="view" id="view-admin">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand">إدارة الكتب</div>
+        </div>
+        <div class="form">
+          <div class="field"><input type="text" id="adminSearch" placeholder="ابحث داخل إدارة الكتب"/></div>
+          <div class="hstack" style="gap:8px;flex-wrap:wrap;margin-bottom:8px">
+            <button class="btn primary" id="addBookBtn">➕ إضافة كتاب</button>
+            <button class="btn" id="exportBooksBtn">📦 تصدير جميع الكتب (JSON)</button>
+            <button class="btn" id="importBooksBtn">📥 استيراد كتب (JSON)</button>
+            <input type="file" id="importBooksFile" accept="application/json" style="display:none"/>
+          </div>
+        </div>
+        <div id="adminList"></div>
+      </section>
+
+      <section class="view" id="view-editor">
+        <div class="sectionHead">
+          <button class="iconbtn back" data-action="back">◀</button>
+          <div class="brand" id="editorTitle">محرّر الكتاب</div>
+        </div>
+        <div class="form" id="bookForm">
+          <div class="field"><label>المعرّف (ثابت)</label><input type="text" id="f-id" readonly/></div>
+          <div class="field"><label>العنوان</label><input type="text" id="f-title" required/></div>
+          <div class="field"><label>المؤلف</label><input type="text" id="f-author" required/></div>
+          <div class="field">
+            <label>التصنيف</label>
+            <input list="catsList" id="f-category" placeholder="اكتب تصنيفًا أو اختر"/>
+            <datalist id="catsList"></datalist>
+          </div>
+          <div class="field"><label>اللغة</label><select id="f-lang"><option value="ar">العربية</option><option value="en">English</option></select></div>
+          <div class="field"><label>المدة التقريبية (دقائق)</label><input type="number" id="f-duration" min="1" step="1"/></div>
+          <div class="field"><label>عدد الصفحات</label><input type="number" id="f-pages" min="1" step="1"/></div>
+          <div class="field"><label>وسوم (افصل بفواصل)</label><input type="text" id="f-tags" placeholder="فلسفة, قصة, ممتع"/></div>
+          <div class="field"><label>رابط غلاف (اختياري)</label><input type="url" id="f-cover" placeholder="https://.../cover.jpg"/></div>
+          <div class="field"><label>الملخّص</label><textarea id="f-summary"></textarea></div>
+          <div class="field"><label>اقتباس بارز</label><input type="text" id="f-quote" placeholder="جملة قصيرة لافتة"/></div>
+          <div class="field"><label>محتوى القارئ (اختياري)</label><textarea id="f-content" placeholder="نص مختصر للقراءة داخل التطبيق..."></textarea></div>
+          <div class="field"><label>مدة الملخّص الصوتي (ثوانٍ، اختياري)</label><input type="number" id="f-audiolen" min="60" step="30" placeholder="300 = خمس دقائق"/></div>
+          <div class="hstack" style="gap:8px;flex-wrap:wrap">
+            <button class="btn primary" id="saveBookBtn">💾 حفظ</button>
+            <button class="btn" id="cancelEditBtn">رجوع</button>
+            <button class="btn danger" id="deleteBookBtn" style="display:none">🗑️ حذف</button>
+            <button class="btn" id="exportOneBtn" style="display:none">↗️ تصدير هذا الكتاب</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <nav class="tabs">
+      <div class="tab active" data-tab="home">🏠 الرئيسية</div>
+      <div class="tab" data-tab="sections">🗂️ الأقسام</div>
+      <div class="tab" data-tab="library">📚 مكتبتي</div>
+      <div class="tab" data-tab="profile">👤 ملفي</div>
+    </nav>
+  </div>
+
+  <div class="sheet" id="audioSheet">
+    <div class="backdrop" data-action="close-sheet"></div>
+    <div class="panel">
+      <div class="grab"></div>
+      <div class="hstack" style="justify-content:space-between">
+        <div style="font-weight:800" id="audioTitle">الملخص الصوتي</div>
+        <button class="iconbtn" data-action="close-sheet">✖</button>
+      </div>
+      <div style="margin:10px 0;color:var(--muted)">ملخّص صوتي تجريبي (مؤقّت فقط)</div>
+      <div class="progressBar"><div id="audioProg" style="width:0%"></div></div>
+      <div class="hstack" style="justify-content:space-between;margin:8px 0">
+        <div id="audioTime">00:00 / 05:00</div>
+        <div class="chips"><div class="chip" id="audioSpeed">1x</div></div>
+      </div>
+      <div class="hstack" style="gap:8px">
+        <button class="btn primary" id="audioPlay">▶ تشغيل</button>
+        <button class="btn" id="audioPause">⏸️ إيقاف مؤقت</button>
+        <button class="btn" id="audioReset">↺ إعادة</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
